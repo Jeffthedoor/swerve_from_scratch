@@ -30,4 +30,8 @@ public final class Constants {
     public static final double CANCODER_OFFSET_BACK_RIGHT = 0; 
 
     public static final double STEER_GEAR_RATIO = 150 / 7;
+
+    public static final double turnGain = 1;
+    public static final double moveGain = 1;
+
 }
