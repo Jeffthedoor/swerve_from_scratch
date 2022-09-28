@@ -6,8 +6,11 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import static java.lang.Math.*;
 
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.DrivePods.BLDP;
@@ -26,6 +29,7 @@ public class Drivetrain extends CommandBase {
   private DoubleSupplier backJoyX;
   private DoubleSupplier backJoyY;
 
+  private AHRS gyro = new AHRS(Port.kMXP);
 
   public Drivetrain(FLDP fldp, FRDP frdp, BLDP bldp, BRDP brdp, DoubleSupplier leftJoyX, DoubleSupplier leftJoyY, DoubleSupplier backJoyX, DoubleSupplier backJoyY) {
     this.fldp = fldp;
@@ -50,12 +54,14 @@ public class Drivetrain extends CommandBase {
 //coded with idea that 3 oclock is zero degrees, counterclockwise is positive, 2PI radians in a circle
 //drivepod zero is facing forwards
 
+    double currentAngle = gyro.getAngle() * PI / 180;
+
     double targetHeading = atan2(leftJoyY.getAsDouble(), leftJoyX.getAsDouble());
     // double error = gyro - targetHeading;
-    double robotTurnTarget = (gyro - targetHeading) * Constants.turnGain;
+    double robotTurnTarget = (currentAngle - targetHeading) * Constants.turnGain;
 
-    double moveX = cos(gyro) * backJoyX.getAsDouble() * Constants.moveGain;
-    double moveY = sin(gyro) * backJoyY.getAsDouble() * Constants.moveGain;
+    double moveX = cos(currentAngle) * backJoyX.getAsDouble() * Constants.moveGain;
+    double moveY = sin(currentAngle) * backJoyY.getAsDouble() * Constants.moveGain;
 
 
 
@@ -77,7 +83,7 @@ public class Drivetrain extends CommandBase {
       podError += PI;
       backward = true;      
     }
-    bldp.setAngle(podError + bldp.getPodAngle() - gyro);
+    bldp.setAngle(podError + bldp.getPodAngle() - currentAngle);
     bldp.setPower(sqrt(bldpX*bldpX+bldpY*bldpY) * (backward ? -1 : 1));
 
 
@@ -98,7 +104,7 @@ public class Drivetrain extends CommandBase {
       podError += PI;
       backward = true;      
     }
-    brdp.setAngle(podError + brdp.getPodAngle() - gyro);
+    brdp.setAngle(podError + brdp.getPodAngle() - currentAngle);
     brdp.setPower(sqrt(brdpX*brdpX+brdpY*brdpY) * (backward ? -1 : 1));
 
 
@@ -119,7 +125,7 @@ public class Drivetrain extends CommandBase {
       podError += PI;
       backward = true;      
     }
-    frdp.setAngle(podError + frdp.getPodAngle() - gyro);
+    frdp.setAngle(podError + frdp.getPodAngle() - currentAngle);
     frdp.setPower(sqrt(frdpX*frdpX+frdpY*frdpY) * (backward ? -1 : 1));
 
 
@@ -140,7 +146,7 @@ public class Drivetrain extends CommandBase {
       podError += PI;
       backward = true;      
     }
-    fldp.setAngle(podError + fldp.getPodAngle() - gyro);
+    fldp.setAngle(podError + fldp.getPodAngle() - currentAngle);
     fldp.setPower(sqrt(fldpX*fldpX+fldpY*fldpY) * (backward ? -1 : 1));
 
   }
