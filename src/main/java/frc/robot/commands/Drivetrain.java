@@ -29,6 +29,8 @@ public class Drivetrain extends CommandBase {
   private DoubleSupplier backJoyX;
   private DoubleSupplier backJoyY;
 
+  private double initialAngle;
+
   private AHRS gyro = new AHRS(Port.kMXP);
 
   public Drivetrain(FLDP fldp, FRDP frdp, BLDP bldp, BRDP brdp, DoubleSupplier leftJoyX, DoubleSupplier leftJoyY, DoubleSupplier backJoyX, DoubleSupplier backJoyY) {
@@ -45,7 +47,9 @@ public class Drivetrain extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    initialAngle = gyro.getAngle();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -54,7 +58,7 @@ public class Drivetrain extends CommandBase {
 //coded with idea that 3 oclock is zero degrees, counterclockwise is positive, 2PI radians in a circle
 //drivepod zero is facing forwards
 
-    double currentAngle = gyro.getAngle() * PI / 180;
+    double currentAngle = (gyro.getAngle() - initialAngle) * PI / -180;
 
     double targetHeading = atan2(leftJoyY.getAsDouble(), leftJoyX.getAsDouble());
     // double error = gyro - targetHeading;
