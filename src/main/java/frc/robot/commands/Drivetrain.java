@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 
 import static java.lang.Math.*;
@@ -31,7 +32,8 @@ public class Drivetrain extends CommandBase {
 
   private double initialAngle;
 
-  private AHRS gyro = new AHRS(Port.kMXP);
+  //private AHRS gyro = new AHRS(Port.kMXP);
+  WPI_PigeonIMU gyro = new WPI_PigeonIMU(0); // Pigeon is on CAN Bus with device ID 0
 
   public Drivetrain(FLDP fldp, FRDP frdp, BLDP bldp, BRDP brdp, DoubleSupplier leftJoyX, DoubleSupplier leftJoyY, DoubleSupplier backJoyX, DoubleSupplier backJoyY) {
     this.fldp = fldp;
