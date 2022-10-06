@@ -32,8 +32,8 @@ public class Drivetrain extends CommandBase {
 
   private double initialAngle;
 
-  //private AHRS gyro = new AHRS(Port.kMXP);
-  WPI_PigeonIMU gyro = new WPI_PigeonIMU(0); // Pigeon is on CAN Bus with device ID 0
+  private AHRS gyro = new AHRS(Port.kMXP);
+  //WPI_PigeonIMU gyro = new WPI_PigeonIMU(0); // Pigeon is on CAN Bus with device ID 0
 
   public Drivetrain(FLDP fldp, FRDP frdp, BLDP bldp, BRDP brdp, DoubleSupplier leftJoyX, DoubleSupplier leftJoyY, DoubleSupplier backJoyX, DoubleSupplier backJoyY) {
     this.fldp = fldp;
@@ -45,6 +45,8 @@ public class Drivetrain extends CommandBase {
     this.leftJoyY = leftJoyY;
     this.backJoyX = backJoyX;
     this.backJoyY = backJoyY;
+
+    addRequirements(fldp, frdp, bldp, brdp);
   }
 
   // Called when the command is initially scheduled.
@@ -62,7 +64,7 @@ public class Drivetrain extends CommandBase {
 
     double currentAngle = (gyro.getAngle() - initialAngle) * PI / -180;
 
-    double targetHeading = atan2(leftJoyY.getAsDouble(), leftJoyX.getAsDouble());
+    double targetHeading = /*Math.*/atan2(leftJoyY.getAsDouble(), leftJoyX.getAsDouble());
     // double error = gyro - targetHeading;
     double robotTurnTarget = (currentAngle - targetHeading) * Constants.turnGain;
 
@@ -77,7 +79,7 @@ public class Drivetrain extends CommandBase {
 
     double podMove = atan2(bldpY, bldpX);
     double podAngle = bldp.getPodAngle();
-    while (podAngle > 2*PI || podAngle < 0) {
+    while (podAngle > 2*PI || podAngle <= 0) {
       podAngle += (podAngle >= 2*PI) ? -2*PI : ((podAngle < 0) ? 2*PI : 0);
     }
     double podError = podMove - podAngle;
@@ -98,7 +100,7 @@ public class Drivetrain extends CommandBase {
 
     podMove = atan2(brdpY, brdpX);
     podAngle = brdp.getPodAngle();
-    while (podAngle > 2*PI || podAngle < 0) {
+    while (podAngle > 2*PI || podAngle <= 0) {
       podAngle += (podAngle >= 2*PI) ? -2*PI : ((podAngle < 0) ? 2*PI : 0);
     }
     podError = podMove - podAngle;
@@ -119,7 +121,7 @@ public class Drivetrain extends CommandBase {
 
     podMove = atan2(frdpY, frdpX);
     podAngle = frdp.getPodAngle();
-    while (podAngle > 2*PI || podAngle < 0) {
+    while (podAngle > 2*PI || podAngle <= 0) {
       podAngle += (podAngle >= 2*PI) ? -2*PI : ((podAngle < 0) ? 2*PI : 0);
     }
     podError = podMove - podAngle;
@@ -140,7 +142,7 @@ public class Drivetrain extends CommandBase {
 
     podMove = atan2(fldpY, fldpX);
     podAngle = fldp.getPodAngle();
-    while (podAngle > 2*PI || podAngle < 0) {
+    while (podAngle > 2*PI || podAngle <= 0) {
       podAngle += (podAngle >= 2*PI) ? -2*PI : ((podAngle < 0) ? 2*PI : 0);
     }
     podError = podMove - podAngle;

@@ -23,7 +23,9 @@ public class FRDP extends SubsystemBase {
 
   private ShuffleboardTab podTab = Shuffleboard.getTab("pods");
   private NetworkTableEntry podAngle = podTab.add("FR angle", 0).getEntry();
+  private NetworkTableEntry driveOutput = podTab.add("FR output", 0).getEntry();
 
+  
   public FRDP() {
     canCoder = new CANCoder(Constants.CANCODER_FRONT_RIGHT);
     steer = new TalonFX(Constants.STEER_FRONT_RIGHT);
@@ -49,10 +51,12 @@ public class FRDP extends SubsystemBase {
 
   public double getPodAngle() {
       return steer.getSelectedSensorPosition();
+      // return canCoder.getAbsolutePosition();
   }
 
   public void setPower(double power) {
-    drive.set(TalonFXControlMode.Velocity, power);
+    // drive.set(TalonFXControlMode.PercentOutput, power);
+    driveOutput.setDouble(power);
   }
 
   public void setAngle(double angle) {
@@ -60,7 +64,7 @@ public class FRDP extends SubsystemBase {
   }
 
   private double angleToTicks(double angle) {
-    return angle * Constants.STEER_GEAR_RATIO * 2048;
+    return angle * Constants.STEER_GEAR_RATIO * 2048 / 2 / Math.PI;
   }
 
   private void setGains() {

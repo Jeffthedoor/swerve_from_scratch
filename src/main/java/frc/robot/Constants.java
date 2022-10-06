@@ -24,10 +24,10 @@ public final class Constants {
     public static final boolean DRIVE_INVERT = false;
     public static final boolean STEER_INVERT = false;
 
-    public static final double CANCODER_OFFSET_FRONT_LEFT = 0;
-    public static final double CANCODER_OFFSET_FRONT_RIGHT = 0;
-    public static final double CANCODER_OFFSET_BACK_LEFT = 0;
-    public static final double CANCODER_OFFSET_BACK_RIGHT = 0; 
+    public static final double CANCODER_OFFSET_FRONT_LEFT = 359.0;
+    public static final double CANCODER_OFFSET_FRONT_RIGHT = 318.0;
+    public static final double CANCODER_OFFSET_BACK_LEFT = 4.0;
+    public static final double CANCODER_OFFSET_BACK_RIGHT = 187.0; 
 
     public static final double STEER_GEAR_RATIO = 150 / 7;
 
