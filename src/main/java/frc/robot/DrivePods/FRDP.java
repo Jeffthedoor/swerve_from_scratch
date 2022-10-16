@@ -23,7 +23,8 @@ public class FRDP extends SubsystemBase {
 
   private ShuffleboardTab podTab = Shuffleboard.getTab("pods");
   private NetworkTableEntry podAngle = podTab.add("FR angle", 0).getEntry();
-  private NetworkTableEntry driveOutput = podTab.add("FR output", 0).getEntry();
+  private NetworkTableEntry steerOutput = podTab.add("FR steer", 0).getEntry();
+  private NetworkTableEntry driveOutput = podTab.add("FR drive", 0).getEntry();
 
   
   public FRDP() {
@@ -37,7 +38,7 @@ public class FRDP extends SubsystemBase {
     drive.setInverted(Constants.DRIVE_INVERT);
     steer.setInverted(Constants.STEER_INVERT);
 
-    steer.setSelectedSensorPosition((canCoder.getAbsolutePosition() - Constants.CANCODER_OFFSET_FRONT_RIGHT) * Constants.STEER_GEAR_RATIO * 2048);
+    // steer.setSelectedSensorPosition((canCoder.getAbsolutePosition() - Constants.CANCODER_OFFSET_FRONT_RIGHT) * Constants.STEER_GEAR_RATIO * 2048);
 
     setGains();
 
@@ -50,17 +51,18 @@ public class FRDP extends SubsystemBase {
   }
 
   public double getPodAngle() {
-      return steer.getSelectedSensorPosition();
-      // return canCoder.getAbsolutePosition();
+      return steer.getSelectedSensorPosition() / Constants.STEER_GEAR_RATIO / 2048 * -2 * Math.PI;
+      // return canCoder.getAbsolutePosition() * Math.PI / 180;
   }
 
   public void setPower(double power) {
-    // drive.set(TalonFXControlMode.PercentOutput, power);
+    drive.set(TalonFXControlMode.PercentOutput, power);
     driveOutput.setDouble(power);
   }
 
   public void setAngle(double angle) {
-    steer.set(TalonFXControlMode.Position, angleToTicks(angle));
+    steer.set(TalonFXControlMode.Position, angleToTicks(-angle));
+    steerOutput.setDouble(angle);
   }
 
   private double angleToTicks(double angle) {
@@ -69,9 +71,9 @@ public class FRDP extends SubsystemBase {
 
   private void setGains() {
     steer.config_kP(0, Constants.STEER_P);
-    steer.config_kI(0, Constants.STEER_I);
-    steer.config_kD(0, Constants.STEER_D);
-    steer.config_kF(0, Constants.STEER_F);
+    // steer.config_kI(0, Constants.STEER_I);
+    // steer.config_kD(0, Constants.STEER_D);
+    // steer.config_kF(0, Constants.STEER_F);
 
     steer.selectProfileSlot(0, 0);
   }

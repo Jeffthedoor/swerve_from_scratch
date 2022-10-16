@@ -64,7 +64,7 @@ public class Drivetrain extends CommandBase {
 
     double currentAngle = (gyro.getAngle() - initialAngle) * PI / -180;
 
-    double targetHeading = /*Math.*/atan2(leftJoyY.getAsDouble(), leftJoyX.getAsDouble());
+    double targetHeading = /*atan(leftJoyX.getAsDouble()/leftJoyY.getAsDouble());*//*Math.*/atan2(leftJoyY.getAsDouble(), leftJoyX.getAsDouble());
     // double error = gyro - targetHeading;
     double robotTurnTarget = (currentAngle - targetHeading) * Constants.turnGain;
 
@@ -91,7 +91,7 @@ public class Drivetrain extends CommandBase {
       podError += PI;
       backward = true;      
     }
-    bldp.setAngle(podError + bldp.getPodAngle() - currentAngle);
+    bldp.setAngle(podError + bldp.getPodAngle());
     bldp.setPower(sqrt(bldpX*bldpX+bldpY*bldpY) * (backward ? -1 : 1));
 
 
@@ -112,12 +112,12 @@ public class Drivetrain extends CommandBase {
       podError += PI;
       backward = true;      
     }
-    brdp.setAngle(podError + brdp.getPodAngle() - currentAngle);
+    brdp.setAngle(podError + brdp.getPodAngle());
     brdp.setPower(sqrt(brdpX*brdpX+brdpY*brdpY) * (backward ? -1 : 1));
 
 
-    double frdpX = cos(PI/4)*robotTurnTarget + moveX;
-    double frdpY = sin(PI/4)*robotTurnTarget + moveY;
+    double frdpX = cos(PI*1/4)*robotTurnTarget + moveX;
+    double frdpY = sin(PI*1/4)*robotTurnTarget + moveY;
 
     podMove = atan2(frdpY, frdpX);
     podAngle = frdp.getPodAngle();
@@ -133,28 +133,28 @@ public class Drivetrain extends CommandBase {
       podError += PI;
       backward = true;      
     }
-    frdp.setAngle(podError + frdp.getPodAngle() - currentAngle);
+    frdp.setAngle(podError + frdp.getPodAngle());
     frdp.setPower(sqrt(frdpX*frdpX+frdpY*frdpY) * (backward ? -1 : 1));
 
 
-    double fldpX = cos(PI*7/4)*robotTurnTarget + moveX;
-    double fldpY = sin(PI*7/4)*robotTurnTarget + moveY;
+    double fldpX = cos(PI*1/4)*robotTurnTarget + moveX;
+    double fldpY = sin(PI*1/4)*robotTurnTarget + moveY;
 
     podMove = atan2(fldpY, fldpX);
     podAngle = fldp.getPodAngle();
-    while (podAngle > 2*PI || podAngle <= 0) {
-      podAngle += (podAngle >= 2*PI) ? -2*PI : ((podAngle < 0) ? 2*PI : 0);
+    while (podAngle > PI || podAngle <= -PI) {
+      podAngle += (podAngle >= PI) ? -2*PI : ((podAngle < -PI) ? 2*PI : 0);
     }
     podError = podMove - podAngle;
     backward = false;
     if (podError > PI/2) {
-      podError += -PI;
+      podError -= PI;
       backward = true;
     } else if (podError < PI/-2) {
       podError += PI;
       backward = true;      
     }
-    fldp.setAngle(podError + fldp.getPodAngle() - currentAngle);
+    fldp.setAngle(podError + fldp.getPodAngle());
     fldp.setPower(sqrt(fldpX*fldpX+fldpY*fldpY) * (backward ? -1 : 1));
 
   }

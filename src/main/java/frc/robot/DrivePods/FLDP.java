@@ -23,7 +23,8 @@ public class FLDP extends SubsystemBase {
 
   private ShuffleboardTab podTab = Shuffleboard.getTab("pods");
   private NetworkTableEntry podAngle = podTab.add("FL angle", 0).getEntry();
-  private NetworkTableEntry driveOutput = podTab.add("FL output", 0).getEntry();
+  private NetworkTableEntry steerOutput = podTab.add("FL steer", 0).getEntry();
+  private NetworkTableEntry driveOutput = podTab.add("FL drive", 0).getEntry();
 
   public FLDP() {
     canCoder = new CANCoder(Constants.CANCODER_FRONT_LEFT);
@@ -49,8 +50,8 @@ public class FLDP extends SubsystemBase {
   }
 
   public double getPodAngle() {
-      return steer.getSelectedSensorPosition();
-      // return canCoder.getAbsolutePosition();
+      // return steer.getSelectedSensorPosition() / Constants.STEER_GEAR_RATIO / 2048 * 2 * Math.PI;
+      return canCoder.getAbsolutePosition() * Math.PI / 180;
   }
 
   public void setPower(double power) {
@@ -60,6 +61,7 @@ public class FLDP extends SubsystemBase {
 
   public void setAngle(double angle) {
     steer.set(TalonFXControlMode.Position, angleToTicks(angle));
+    steerOutput.setDouble(angle);
   }
 
   private double angleToTicks(double angle) {
@@ -68,9 +70,9 @@ public class FLDP extends SubsystemBase {
 
   private void setGains() {
     steer.config_kP(0, Constants.STEER_P);
-    steer.config_kI(0, Constants.STEER_I);
-    steer.config_kD(0, Constants.STEER_D);
-    steer.config_kF(0, Constants.STEER_F);
+    // steer.config_kI(0, Constants.STEER_I);
+    // steer.config_kD(0, Constants.STEER_D);
+    // steer.config_kF(0, Constants.STEER_F);
 
     steer.selectProfileSlot(0, 0);
   }

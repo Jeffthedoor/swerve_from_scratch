@@ -16,7 +16,7 @@ public final class Constants {
     public static final int STEER_BACK_LEFT = 18;
     public static final int STEER_BACK_RIGHT = 12;
 
-    public static final double STEER_P = 0;
+    public static final double STEER_P = 0.0001;
     public static final double STEER_I = 0;
     public static final double STEER_D = 0;
     public static final double STEER_F = 0;
@@ -31,7 +31,7 @@ public final class Constants {
 
     public static final double STEER_GEAR_RATIO = 150 / 7;
 
-    public static final double turnGain = 1;
-    public static final double moveGain = 1;
+    public static final double turnGain = 0.1;
+    public static final double moveGain = 0.0;
 
 }
