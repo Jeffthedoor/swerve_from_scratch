@@ -5,6 +5,7 @@
 package frc.robot.DrivePods;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -37,7 +38,11 @@ public class BRDP extends SubsystemBase {
     drive.setInverted(Constants.DRIVE_INVERT);
     steer.setInverted(Constants.STEER_INVERT);
 
-    // steer.setSelectedSensorPosition((canCoder.getAbsolutePosition() - Constants.CANCODER_OFFSET_BACK_RIGHT) * Constants.STEER_GEAR_RATIO * 2048);
+    steer.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,Constants.statorCurrentLimitSteer,25,1.0));
+    steer.configOpenloopRamp(Constants.rampRateSteer);
+    drive.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,Constants.statorCurrentLimitDrive,25,1.0));
+    drive.configOpenloopRamp(Constants.rampRateDrive);
+    steer.setSelectedSensorPosition((canCoder.getAbsolutePosition() - Constants.CANCODER_OFFSET_BACK_RIGHT) * Constants.STEER_GEAR_RATIO * 2048);
 
     setGains();
 
@@ -50,17 +55,17 @@ public class BRDP extends SubsystemBase {
   }
 
   public double getPodAngle() {
-      return steer.getSelectedSensorPosition() / Constants.STEER_GEAR_RATIO / 2048 * -2 * Math.PI;
+      return steer.getSelectedSensorPosition() / Constants.STEER_GEAR_RATIO / 2048.0 * 2.0 * Math.PI;
       // return canCoder.getAbsolutePosition() * Math.PI / 180;
   }
 
   public void setPower(double power) {
-    drive.set(TalonFXControlMode.PercentOutput, power);
+    drive.set(TalonFXControlMode.PercentOutput, power/10);
     driveOutput.setDouble(power);
   }
 
   public void setAngle(double angle) {
-    steer.set(TalonFXControlMode.Position, angleToTicks(-angle));
+    steer.set(TalonFXControlMode.Position, angleToTicks(angle));
     steerOutput.setDouble(angle);
   }
 
@@ -70,9 +75,9 @@ public class BRDP extends SubsystemBase {
 
   private void setGains() {
     steer.config_kP(0, Constants.STEER_P);
-    //steer.config_kI(0, Constants.STEER_I);
-    //steer.config_kD(0, Constants.STEER_D);
-    //steer.config_kF(0, Constants.STEER_F);
+    steer.config_kI(0, Constants.STEER_I);
+    steer.config_kD(0, Constants.STEER_D);
+    steer.config_kF(0, Constants.STEER_F);
 
     steer.selectProfileSlot(0, 0);
   }

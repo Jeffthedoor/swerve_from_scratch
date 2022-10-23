@@ -5,9 +5,11 @@
 package frc.robot.DrivePods;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -27,10 +29,10 @@ public class BLDP extends SubsystemBase {
   private NetworkTableEntry podAngle = podTab.add("BL angle ticks", 0).getEntry();
   private NetworkTableEntry steerOutput = podTab.add("BL steer", 0).getEntry();
   private NetworkTableEntry driveOutput = podTab.add("BL drive", 0).getEntry();
-  private NetworkTableEntry gyroAngle = podTab.add("gyro angle deg", 0).getEntry();
+  // private NetworkTableEntry gyroAngle = podTab.add("gyro angle deg", 0).getEntry();
   
-  private AHRS gyro = new AHRS(Port.kMXP);
-  //WPI_PigeonIMU gyro = new WPI_PigeonIMU(0); // Pigeon is on CAN Bus with device ID 0
+  // private AHRS gyro = new AHRS(Port.kMXP);
+  // WPI_PigeonIMU gyro = new WPI_PigeonIMU(0); // Pigeon is on CAN Bus with device ID 0
 
   public BLDP() {
     canCoder = new CANCoder(Constants.CANCODER_BACK_LEFT);
@@ -43,7 +45,12 @@ public class BLDP extends SubsystemBase {
     drive.setInverted(Constants.DRIVE_INVERT);
     steer.setInverted(Constants.STEER_INVERT);
 
-    // steer.setSelectedSensorPosition((canCoder.getAbsolutePosition() - Constants.CANCODER_OFFSET_BACK_LEFT) * Constants.STEER_GEAR_RATIO * 2048);
+    steer.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,Constants.statorCurrentLimitSteer,25,1.0));
+    steer.configOpenloopRamp(Constants.rampRateSteer);
+    drive.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,Constants.statorCurrentLimitDrive,25,1.0));
+    drive.configOpenloopRamp(Constants.rampRateDrive);
+
+    steer.setSelectedSensorPosition((canCoder.getAbsolutePosition() - Constants.CANCODER_OFFSET_BACK_LEFT) * Constants.STEER_GEAR_RATIO * 2048);
 
     setGains();
 
@@ -53,21 +60,22 @@ public class BLDP extends SubsystemBase {
   @Override
   public void periodic() {
     podAngle.setDouble(getPodAngle());
-    gyroAngle.setDouble(gyro.getAngle());
+    // gyroAngle.setDouble(gyro.getAngle());
   }
 
   public double getPodAngle() {
-      return steer.getSelectedSensorPosition() / Constants.STEER_GEAR_RATIO / 2048 * -2 * Math.PI;
+      return steer.getSelectedSensorPosition() / Constants.STEER_GEAR_RATIO / 2048 * 2 * Math.PI;
       // return canCoder.getAbsolutePosition() * Math.PI / 180;
   }
 
   public void setPower(double power) {
-    drive.set(TalonFXControlMode.PercentOutput, power);
+    drive.set(TalonFXControlMode.PercentOutput, power/10);
     driveOutput.setDouble(power);
+    // gyroAngle.setDouble(gyro.getAngle()); 
   }
 
   public void setAngle(double angle) {
-    steer.set(TalonFXControlMode.Position, angleToTicks(-angle));
+    steer.set(TalonFXControlMode.Position, angleToTicks(angle));
     steerOutput.setDouble(angle);
   }
 
@@ -77,9 +85,9 @@ public class BLDP extends SubsystemBase {
 
   private void setGains() {
     steer.config_kP(0, Constants.STEER_P);
-    //steer.config_kI(0, Constants.STEER_I);
-    //steer.config_kD(0, Constants.STEER_D);
-    //steer.config_kF(0, Constants.STEER_F);
+    steer.config_kI(0, Constants.STEER_I);
+    steer.config_kD(0, Constants.STEER_D);
+    steer.config_kF(0, Constants.STEER_F);
 
     steer.selectProfileSlot(0, 0);
   }

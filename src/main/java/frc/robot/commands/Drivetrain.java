@@ -52,7 +52,7 @@ public class Drivetrain extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    initialAngle = gyro.getAngle();
+    initialAngle = 0; // TODO: do gyro gyro.getAngle();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -62,14 +62,13 @@ public class Drivetrain extends CommandBase {
 //coded with idea that 3 oclock is zero degrees, counterclockwise is positive, 2PI radians in a circle
 //drivepod zero is facing forwards
 
-    double currentAngle = (gyro.getAngle() - initialAngle) * PI / -180;
+    double currentAngle = 0; // TODO: do gyro (gyro.getAngle() - initialAngle) * PI / -180;
 
-    double targetHeading = /*atan(leftJoyX.getAsDouble()/leftJoyY.getAsDouble());*//*Math.*/atan2(leftJoyY.getAsDouble(), leftJoyX.getAsDouble());
-    // double error = gyro - targetHeading;
+    double targetHeading = 0; // TODO: uncomment with do gyro /*atan(leftJoyX.getAsDouble()/leftJoyY.getAsDouble());*//*Math.*/atan2(leftJoyY.getAsDouble(), leftJoyX.getAsDouble());
     double robotTurnTarget = (currentAngle - targetHeading) * Constants.turnGain;
 
-    double moveX = cos(currentAngle) * backJoyX.getAsDouble() * Constants.moveGain;
-    double moveY = sin(currentAngle) * backJoyY.getAsDouble() * Constants.moveGain;
+    double moveX = ((-1 * cos(currentAngle) * backJoyX.getAsDouble()) + (sin(currentAngle) * backJoyY.getAsDouble())) * Constants.moveGain;
+    double moveY = ((-1 * cos(currentAngle) * backJoyY.getAsDouble()) + (sin(currentAngle) * backJoyX.getAsDouble())) * Constants.moveGain;
 
 
 
@@ -77,85 +76,85 @@ public class Drivetrain extends CommandBase {
     double bldpX = cos(PI*5/4)*robotTurnTarget + moveX;
     double bldpY = sin(PI*5/4)*robotTurnTarget + moveY;
 
-    double podMove = atan2(bldpY, bldpX);
-    double podAngle = bldp.getPodAngle();
-    while (podAngle > 2*PI || podAngle <= 0) {
-      podAngle += (podAngle >= 2*PI) ? -2*PI : ((podAngle < 0) ? 2*PI : 0);
+    double blpodMove = atan2(bldpY, bldpX);
+    double blpodAngle = bldp.getPodAngle();
+    while (blpodAngle > PI || blpodAngle <= -PI) {
+      blpodAngle += (blpodAngle >= PI) ? -2*PI : ((blpodAngle < -PI) ? 2*PI : 0);
     }
-    double podError = podMove - podAngle;
-    boolean backward = false;
-    if (podError > PI/2) {
-      podError += -PI;
-      backward = true;
-    } else if (podError < PI/-2) {
-      podError += PI;
-      backward = true;      
+    double blpodError = blpodMove - blpodAngle;
+    boolean blbackward = false;
+    if (blpodError > PI/2) {
+      blpodError += -PI;
+      blbackward = true;
+    } else if (blpodError < PI/-2) {
+      blpodError += PI;
+      blbackward = true;      
     }
-    bldp.setAngle(podError + bldp.getPodAngle());
-    bldp.setPower(sqrt(bldpX*bldpX+bldpY*bldpY) * (backward ? -1 : 1));
+    bldp.setAngle(blpodError + bldp.getPodAngle());
+    bldp.setPower(sqrt(bldpX*bldpX+bldpY*bldpY) * (blbackward ? -1 : 1));
 
 
     double brdpX = cos(PI*3/4)*robotTurnTarget + moveX;
     double brdpY = sin(PI*3/4)*robotTurnTarget + moveY;
 
-    podMove = atan2(brdpY, brdpX);
-    podAngle = brdp.getPodAngle();
-    while (podAngle > 2*PI || podAngle <= 0) {
-      podAngle += (podAngle >= 2*PI) ? -2*PI : ((podAngle < 0) ? 2*PI : 0);
+    double brpodMove = atan2(brdpY, brdpX);
+    double brpodAngle = brdp.getPodAngle();
+    while (brpodAngle > PI || brpodAngle <= -PI) {
+      brpodAngle += (brpodAngle >= PI) ? -2*PI : ((brpodAngle < -PI) ? 2*PI : 0);
     }
-    podError = podMove - podAngle;
-    backward = false;
-    if (podError > PI/2) {
-      podError += -PI;
-      backward = true;
-    } else if (podError < PI/-2) {
-      podError += PI;
-      backward = true;      
+    double brpodError = brpodMove - brpodAngle;
+    boolean brbackward = false;
+    if (brpodError > PI/2) {
+      brpodError -= PI;
+      brbackward = true;
+    } else if (brpodError < PI/-2) {
+      brpodError += PI;
+      brbackward = true;      
     }
-    brdp.setAngle(podError + brdp.getPodAngle());
-    brdp.setPower(sqrt(brdpX*brdpX+brdpY*brdpY) * (backward ? -1 : 1));
+    brdp.setAngle(brpodError + brdp.getPodAngle());
+    brdp.setPower(sqrt(brdpX*brdpX+brdpY*brdpY) * (brbackward ? -1 : 1));
 
 
     double frdpX = cos(PI*1/4)*robotTurnTarget + moveX;
     double frdpY = sin(PI*1/4)*robotTurnTarget + moveY;
 
-    podMove = atan2(frdpY, frdpX);
-    podAngle = frdp.getPodAngle();
-    while (podAngle > 2*PI || podAngle <= 0) {
-      podAngle += (podAngle >= 2*PI) ? -2*PI : ((podAngle < 0) ? 2*PI : 0);
+    double frpodMove = atan2(frdpY, frdpX);
+    double frpodAngle = frdp.getPodAngle();
+    while (frpodAngle > PI || frpodAngle <= -PI) {
+      frpodAngle += (frpodAngle >= PI) ? -2*PI : ((frpodAngle < -PI) ? 2*PI : 0);
     }
-    podError = podMove - podAngle;
-    backward = false;
-    if (podError > PI/2) {
-      podError += -PI;
-      backward = true;
-    } else if (podError < PI/-2) {
-      podError += PI;
-      backward = true;      
+    double frpodError = frpodMove - frpodAngle;
+    boolean frbackward = false;
+    if (frpodError > PI/2) {
+      frpodError += -PI;
+      frbackward = true;
+    } else if (frpodError < PI/-2) {
+      frpodError += PI;
+      frbackward = true;      
     }
-    frdp.setAngle(podError + frdp.getPodAngle());
-    frdp.setPower(sqrt(frdpX*frdpX+frdpY*frdpY) * (backward ? -1 : 1));
+    frdp.setAngle(frpodError + frdp.getPodAngle());
+    frdp.setPower(sqrt(frdpX*frdpX+frdpY*frdpY) * (frbackward ? -1 : 1));
 
 
-    double fldpX = cos(PI*1/4)*robotTurnTarget + moveX;
-    double fldpY = sin(PI*1/4)*robotTurnTarget + moveY;
+    double fldpX = cos(PI*7/4)*robotTurnTarget + moveX;
+    double fldpY = sin(PI*7/4)*robotTurnTarget + moveY;
 
-    podMove = atan2(fldpY, fldpX);
-    podAngle = fldp.getPodAngle();
-    while (podAngle > PI || podAngle <= -PI) {
-      podAngle += (podAngle >= PI) ? -2*PI : ((podAngle < -PI) ? 2*PI : 0);
+    double flpodMove = atan2(fldpY, fldpX);
+    double flpodAngle = fldp.getPodAngle();
+    while (flpodAngle > PI || flpodAngle <= -PI) {
+      flpodAngle += (flpodAngle >= PI) ? -2*PI : ((flpodAngle < -PI) ? 2*PI : 0);
     }
-    podError = podMove - podAngle;
-    backward = false;
-    if (podError > PI/2) {
-      podError -= PI;
-      backward = true;
-    } else if (podError < PI/-2) {
-      podError += PI;
-      backward = true;      
+    double flpodError = flpodMove - flpodAngle;
+    boolean flbackward = false;
+    if (flpodError > PI/2) {
+      flpodError -= PI;
+      flbackward = true;
+    } else if (flpodError < PI/-2) {
+      flpodError += PI;
+      flbackward = true;      
     }
-    fldp.setAngle(podError + fldp.getPodAngle());
-    fldp.setPower(sqrt(fldpX*fldpX+fldpY*fldpY) * (backward ? -1 : 1));
+    fldp.setAngle(flpodError + fldp.getPodAngle());
+    fldp.setPower(sqrt(fldpX*fldpX+fldpY*fldpY) * (flbackward ? -1 : 1));
 
   }
 

@@ -16,22 +16,29 @@ public final class Constants {
     public static final int STEER_BACK_LEFT = 18;
     public static final int STEER_BACK_RIGHT = 12;
 
-    public static final double STEER_P = 0.0001;
+    public static final double STEER_P = 0.01;
     public static final double STEER_I = 0;
-    public static final double STEER_D = 0;
+    public static final double STEER_D = 1;
     public static final double STEER_F = 0;
 
     public static final boolean DRIVE_INVERT = false;
     public static final boolean STEER_INVERT = false;
 
     public static final double CANCODER_OFFSET_FRONT_LEFT = 359.0;
-    public static final double CANCODER_OFFSET_FRONT_RIGHT = 318.0;
+    public static final double CANCODER_OFFSET_FRONT_RIGHT = 228.0; //318.0;
     public static final double CANCODER_OFFSET_BACK_LEFT = 4.0;
-    public static final double CANCODER_OFFSET_BACK_RIGHT = 187.0; 
+    public static final double CANCODER_OFFSET_BACK_RIGHT = 97.0; // 187.0; 
 
     public static final double STEER_GEAR_RATIO = 150 / 7;
 
-    public static final double turnGain = 0.1;
-    public static final double moveGain = 0.0;
+    public static final double turnGain = 1;
+    public static final double moveGain = 1;
+
+    public static final double rampRateSteer = 1;
+    public static final double statorCurrentLimitSteer = 20;
+    public static final double rampRateDrive = 1;
+    public static final double statorCurrentLimitDrive = 20;
+
+
 
 }
