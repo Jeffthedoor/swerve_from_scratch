@@ -78,10 +78,12 @@ public class Drivetrain extends CommandBase {
 
     double blpodMove = atan2(bldpY, bldpX);
     double blpodAngle = bldp.getPodAngle();
-    while (blpodAngle > PI || blpodAngle <= -PI) {
-      blpodAngle += (blpodAngle >= PI) ? -2*PI : ((blpodAngle < -PI) ? 2*PI : 0);
-    }
+    
+    blpodAngle = blpodAngle % 2*PI;
+    blpodAngle += (blpodAngle >= PI) ? -PI : (blpodAngle <= PI) ? PI : 0;
     double blpodError = blpodMove - blpodAngle;
+    blpodError += (blpodError >= PI) ? -PI : (blpodError <= PI) ? PI : 0;
+
     boolean blbackward = false;
     if (blpodError > PI/2) {
       blpodError += -PI;
@@ -90,7 +92,7 @@ public class Drivetrain extends CommandBase {
       blpodError += PI;
       blbackward = true;      
     }
-    bldp.setAngle(blpodError + bldp.getPodAngle());
+    bldp.setAngle(blpodError + blpodAngle);
     bldp.setPower(sqrt(bldpX*bldpX+bldpY*bldpY) * (blbackward ? -1 : 1));
 
 
@@ -99,11 +101,13 @@ public class Drivetrain extends CommandBase {
 
     double brpodMove = atan2(brdpY, brdpX);
     double brpodAngle = brdp.getPodAngle();
-    while (brpodAngle > PI || brpodAngle <= -PI) {
-      brpodAngle += (brpodAngle >= PI) ? -2*PI : ((brpodAngle < -PI) ? 2*PI : 0);
-    }
+
+    brpodAngle = brpodAngle % 2*PI;
+    brpodAngle += (brpodAngle >= PI) ? -PI : (brpodAngle <= PI) ? PI : 0;
     double brpodError = brpodMove - brpodAngle;
+    brpodError += (brpodError >= PI) ? -PI : (brpodError <= PI) ? PI : 0;    
     boolean brbackward = false;
+
     if (brpodError > PI/2) {
       brpodError -= PI;
       brbackward = true;
@@ -111,7 +115,7 @@ public class Drivetrain extends CommandBase {
       brpodError += PI;
       brbackward = true;      
     }
-    brdp.setAngle(brpodError + brdp.getPodAngle());
+    brdp.setAngle(brpodError + brpodAngle);
     brdp.setPower(sqrt(brdpX*brdpX+brdpY*brdpY) * (brbackward ? -1 : 1));
 
 
@@ -120,10 +124,12 @@ public class Drivetrain extends CommandBase {
 
     double frpodMove = atan2(frdpY, frdpX);
     double frpodAngle = frdp.getPodAngle();
-    while (frpodAngle > PI || frpodAngle <= -PI) {
-      frpodAngle += (frpodAngle >= PI) ? -2*PI : ((frpodAngle < -PI) ? 2*PI : 0);
-    }
+
+    frpodAngle = frpodAngle % 2*PI;
+    frpodAngle += (frpodAngle >= PI) ? -PI : (frpodAngle <= PI) ? PI : 0;
     double frpodError = frpodMove - frpodAngle;
+    frpodError += (frpodError >= PI) ? -PI : (frpodError <= PI) ? PI : 0;
+
     boolean frbackward = false;
     if (frpodError > PI/2) {
       frpodError += -PI;
@@ -132,7 +138,7 @@ public class Drivetrain extends CommandBase {
       frpodError += PI;
       frbackward = true;      
     }
-    frdp.setAngle(frpodError + frdp.getPodAngle());
+    frdp.setAngle(frpodError + frpodAngle);
     frdp.setPower(sqrt(frdpX*frdpX+frdpY*frdpY) * (frbackward ? -1 : 1));
 
 
@@ -141,10 +147,12 @@ public class Drivetrain extends CommandBase {
 
     double flpodMove = atan2(fldpY, fldpX);
     double flpodAngle = fldp.getPodAngle();
-    while (flpodAngle > PI || flpodAngle <= -PI) {
-      flpodAngle += (flpodAngle >= PI) ? -2*PI : ((flpodAngle < -PI) ? 2*PI : 0);
-    }
+
+    flpodAngle = flpodAngle % 2*PI;
+    flpodAngle += (flpodAngle >= PI) ? -PI : (flpodAngle <= PI) ? PI : 0;
     double flpodError = flpodMove - flpodAngle;
+    flpodError += (flpodError >= PI) ? -PI : (flpodError <= PI) ? PI : 0;
+
     boolean flbackward = false;
     if (flpodError > PI/2) {
       flpodError -= PI;
@@ -153,7 +161,7 @@ public class Drivetrain extends CommandBase {
       flpodError += PI;
       flbackward = true;      
     }
-    fldp.setAngle(flpodError + fldp.getPodAngle());
+    fldp.setAngle(flpodError + flpodAngle);
     fldp.setPower(sqrt(fldpX*fldpX+fldpY*fldpY) * (flbackward ? -1 : 1));
 
   }
