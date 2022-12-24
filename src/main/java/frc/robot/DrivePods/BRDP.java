@@ -55,8 +55,8 @@ public class BRDP extends SubsystemBase {
   }
 
   public double getPodAngle() {
-      return steer.getSelectedSensorPosition() / Constants.STEER_GEAR_RATIO / 2048.0 * 2.0 * Math.PI;
-      // return canCoder.getAbsolutePosition() * Math.PI / 180;
+    return steer.getSelectedSensorPosition() * (2 * Math.PI)/ (2048 * Constants.STEER_GEAR_RATIO);
+    // return canCoder.getAbsolutePosition() * Math.PI / 180;
   }
 
   public void setPower(double power) {
@@ -70,7 +70,7 @@ public class BRDP extends SubsystemBase {
   }
 
   private double angleToTicks(double angle) {
-    return angle * Constants.STEER_GEAR_RATIO * 2048 / 2 / Math.PI;
+    return angle * (Constants.STEER_GEAR_RATIO * 2048) / (2 * Math.PI);
   }
 
   private void setGains() {

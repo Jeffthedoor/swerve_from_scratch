@@ -55,7 +55,7 @@ public class FLDP extends SubsystemBase {
   }
 
   public double getPodAngle() {
-      return steer.getSelectedSensorPosition() / Constants.STEER_GEAR_RATIO / 2048 * 2 * Math.PI;
+      return steer.getSelectedSensorPosition() * (2 * Math.PI)/ (2048 * Constants.STEER_GEAR_RATIO);
       // return canCoder.getAbsolutePosition() * Math.PI / 180;
   }
 
@@ -70,7 +70,7 @@ public class FLDP extends SubsystemBase {
   }
 
   private double angleToTicks(double angle) {
-    return angle * Constants.STEER_GEAR_RATIO * 2048 / 2 / Math.PI;
+    return angle * (Constants.STEER_GEAR_RATIO * 2048) / (2 * Math.PI);
   }
 
   private void setGains() {

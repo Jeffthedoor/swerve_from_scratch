@@ -67,10 +67,10 @@ public class Drivetrain extends CommandBase {
     double targetHeading = 0; // TODO: uncomment with do gyro /*atan(leftJoyX.getAsDouble()/leftJoyY.getAsDouble());*//*Math.*/atan2(leftJoyY.getAsDouble(), leftJoyX.getAsDouble());
     double robotTurnTarget = (currentAngle - targetHeading) * Constants.turnGain;
 
-    double moveX = ((-1 * cos(currentAngle) * backJoyX.getAsDouble()) + (sin(currentAngle) * backJoyY.getAsDouble())) * Constants.moveGain;
-    double moveY = ((-1 * cos(currentAngle) * backJoyY.getAsDouble()) + (sin(currentAngle) * backJoyX.getAsDouble())) * Constants.moveGain;
-
-
+ //   double moveX = 1;//((-1 * cos(currentAngle) * backJoyX.getAsDouble()) - (sin(currentAngle) * backJoyY.getAsDouble())) * Constants.moveGain;
+ //   double moveY = 1;//((-1 * cos(currentAngle) * backJoyY.getAsDouble()) - (sin(currentAngle) * backJoyX.getAsDouble())) * Constants.moveGain;
+double moveX = backJoyX.getAsDouble();
+double moveY = backJoyY.getAsDouble();
 
 
     double bldpX = cos(PI*5/4)*robotTurnTarget + moveX;
@@ -79,10 +79,10 @@ public class Drivetrain extends CommandBase {
     double blpodMove = atan2(bldpY, bldpX);
     double blpodAngle = bldp.getPodAngle();
     
-    blpodAngle = blpodAngle % 2*PI;
-    blpodAngle += (blpodAngle >= PI) ? -PI : (blpodAngle <= PI) ? PI : 0;
+    blpodAngle = blpodAngle % (2*PI); 
+    blpodAngle += (blpodAngle >= PI) ? -2*PI : (blpodAngle <= -PI) ? 2*PI : 0;
     double blpodError = blpodMove - blpodAngle;
-    blpodError += (blpodError >= PI) ? -PI : (blpodError <= PI) ? PI : 0;
+    blpodError += (blpodError >= PI) ? -2*PI : (blpodError <= -PI) ? 2*PI : 0;
 
     boolean blbackward = false;
     if (blpodError > PI/2) {
@@ -92,8 +92,8 @@ public class Drivetrain extends CommandBase {
       blpodError += PI;
       blbackward = true;      
     }
-    bldp.setAngle(blpodError + blpodAngle);
-    bldp.setPower(sqrt(bldpX*bldpX+bldpY*bldpY) * (blbackward ? -1 : 1));
+    bldp.setAngle(blpodError + bldp.getPodAngle());
+    // bldp.setPower(sqrt(bldpX*bldpX+bldpY*bldpY) * (blbackward ? -1 : 1));
 
 
     double brdpX = cos(PI*3/4)*robotTurnTarget + moveX;
@@ -102,10 +102,10 @@ public class Drivetrain extends CommandBase {
     double brpodMove = atan2(brdpY, brdpX);
     double brpodAngle = brdp.getPodAngle();
 
-    brpodAngle = brpodAngle % 2*PI;
-    brpodAngle += (brpodAngle >= PI) ? -PI : (brpodAngle <= PI) ? PI : 0;
+    brpodAngle = brpodAngle % (2*PI);
+    brpodAngle += (brpodAngle >= PI) ? -2*PI : (brpodAngle <= PI) ? 2*PI : 0;
     double brpodError = brpodMove - brpodAngle;
-    brpodError += (brpodError >= PI) ? -PI : (brpodError <= PI) ? PI : 0;    
+    brpodError += (brpodError >= PI) ? -2*PI : (brpodError <= PI) ? 2*PI : 0;    
     boolean brbackward = false;
 
     if (brpodError > PI/2) {
@@ -115,8 +115,8 @@ public class Drivetrain extends CommandBase {
       brpodError += PI;
       brbackward = true;      
     }
-    brdp.setAngle(brpodError + brpodAngle);
-    brdp.setPower(sqrt(brdpX*brdpX+brdpY*brdpY) * (brbackward ? -1 : 1));
+    brdp.setAngle(brpodError + brdp.getPodAngle());
+    // brdp.setPower(sqrt(brdpX*brdpX+brdpY*brdpY) * (brbackward ? -1 : 1));
 
 
     double frdpX = cos(PI*1/4)*robotTurnTarget + moveX;
@@ -125,10 +125,10 @@ public class Drivetrain extends CommandBase {
     double frpodMove = atan2(frdpY, frdpX);
     double frpodAngle = frdp.getPodAngle();
 
-    frpodAngle = frpodAngle % 2*PI;
-    frpodAngle += (frpodAngle >= PI) ? -PI : (frpodAngle <= PI) ? PI : 0;
+    frpodAngle = frpodAngle % (2*PI);
+    frpodAngle += (frpodAngle >= PI) ? -2*PI : (frpodAngle <= PI) ? 2*PI : 0;
     double frpodError = frpodMove - frpodAngle;
-    frpodError += (frpodError >= PI) ? -PI : (frpodError <= PI) ? PI : 0;
+    frpodError += (frpodError >= PI) ? -2*PI : (frpodError <= PI) ? 2*PI : 0;
 
     boolean frbackward = false;
     if (frpodError > PI/2) {
@@ -138,8 +138,8 @@ public class Drivetrain extends CommandBase {
       frpodError += PI;
       frbackward = true;      
     }
-    frdp.setAngle(frpodError + frpodAngle);
-    frdp.setPower(sqrt(frdpX*frdpX+frdpY*frdpY) * (frbackward ? -1 : 1));
+    frdp.setAngle(frpodError + frdp.getPodAngle());
+    // frdp.setPower(sqrt(frdpX*frdpX+frdpY*frdpY) * (frbackward ? -1 : 1));
 
 
     double fldpX = cos(PI*7/4)*robotTurnTarget + moveX;
@@ -148,10 +148,10 @@ public class Drivetrain extends CommandBase {
     double flpodMove = atan2(fldpY, fldpX);
     double flpodAngle = fldp.getPodAngle();
 
-    flpodAngle = flpodAngle % 2*PI;
-    flpodAngle += (flpodAngle >= PI) ? -PI : (flpodAngle <= PI) ? PI : 0;
+    flpodAngle = flpodAngle % (2*PI);
+    flpodAngle += (flpodAngle >= PI) ? -2*PI : (flpodAngle <= PI) ? 2*PI : 0;
     double flpodError = flpodMove - flpodAngle;
-    flpodError += (flpodError >= PI) ? -PI : (flpodError <= PI) ? PI : 0;
+    flpodError += (flpodError >= PI) ? -2*PI : (flpodError <= PI) ? 2*PI : 0;
 
     boolean flbackward = false;
     if (flpodError > PI/2) {
@@ -161,8 +161,8 @@ public class Drivetrain extends CommandBase {
       flpodError += PI;
       flbackward = true;      
     }
-    fldp.setAngle(flpodError + flpodAngle);
-    fldp.setPower(sqrt(fldpX*fldpX+fldpY*fldpY) * (flbackward ? -1 : 1));
+    fldp.setAngle(flpodError + fldp.getPodAngle());
+    // fldp.setPower(sqrt(fldpX*fldpX+fldpY*fldpY) * (flbackward ? -1 : 1));
 
   }
 

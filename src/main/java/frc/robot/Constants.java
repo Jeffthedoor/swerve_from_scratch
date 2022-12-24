@@ -16,9 +16,10 @@ public final class Constants {
     public static final int STEER_BACK_LEFT = 18;
     public static final int STEER_BACK_RIGHT = 12;
 
-    public static final double STEER_P = 0.01;
+    public static final double STEER_P = 0.1;
     public static final double STEER_I = 0;
-    public static final double STEER_D = 1;
+    public static final double STEER_D = 0;
+    
     public static final double STEER_F = 0;
 
     public static final boolean DRIVE_INVERT = false;
